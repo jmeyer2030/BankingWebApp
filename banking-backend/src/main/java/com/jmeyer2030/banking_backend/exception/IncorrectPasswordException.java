@@ -5,7 +5,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 public class IncorrectPasswordException extends RuntimeException {
 
     public IncorrectPasswordException() {
-        super("Passoword is incorrect");
+        super("Password is incorrect");
     }
 
     public IncorrectPasswordException(String message) {

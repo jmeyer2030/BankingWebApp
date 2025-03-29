@@ -55,7 +55,7 @@ export default {
                 })
                 
                 if (response.status === 200) {
-                    this.message = "Account created successfully!"
+                    this.message = "Account created successfully!";
                 } else {
                     this.message = "Account creation failed!";
                 }

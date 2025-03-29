@@ -1,4 +1,5 @@
 <template>
+    <h1>Login here!</h1>
     <form class="form-container" @submit.prevent="loginUser">
         <label for="username">Username: </label>
         <input type="text" id="username" name="username" v-model="formData.username">
@@ -6,8 +7,15 @@
         <label for="password">Password: </label>
         <input type="text" id="password" name="password" v-model="formData.password">
 
+        <button type="submit">Login!</button>
     </form>
-    <button type="submit">Login!</button>
+
+    <p v-if="loading">Submitting... Please wait.</p>
+    <p v-if="message">{{ message }}</p>
+    <ul v-if="errorMessages.length">
+        <li v-for="(error, index) in errorMessages" :key="index">{{ error }}</li>
+    </ul>
+
 </template>
 
 <script>
@@ -29,6 +37,7 @@ export default {
             this.loading = true;
             this.message = "";
             this.errorMessages = [];
+            console.log("Login attempt started...");
 
             try {
                 const response = await axios.post("http://localhost:8081/auth/login", this.formData, {

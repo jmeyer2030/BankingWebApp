@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<?> UsernameNotFoundException(UsernameNotFoundException e) {
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<?> UserDoesNotExistException(UserDoesNotExistException e) {
         return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
     }
 

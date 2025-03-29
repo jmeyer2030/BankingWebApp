@@ -12,11 +12,11 @@ public class HelloController {
 
     @GetMapping("/")
     public String index() {
-        return "Greetings from Spring Boot!";
+        return "Spring boot request to / successful!";
     }
 
     @GetMapping("/home")
     public String home() {
-        return "Greetings from the home page!";
+        return "Spring Boot request to /home successful!";
     }
 }
