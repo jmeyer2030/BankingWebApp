@@ -33,7 +33,7 @@ public class AuthService {
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) throws UsernameAlreadyExistsException, IncorrectPasswordException {
         // Check if an account with that username exists
         if (!userRepository.existsByUsername(loginRequest.getUsername())) {
-            throw new UserDoesNotExistException();
+            throw new UserDoesNotExistException(UserDoesNotExistException.Context.SIGN_IN);
         }
 
         // Check if the password is correct
