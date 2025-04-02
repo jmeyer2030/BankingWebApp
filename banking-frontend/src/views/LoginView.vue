@@ -42,6 +42,7 @@ export default {
             try {
                 const response = await axios.post("http://localhost:8081/auth/login", this.formData, {
                     headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
                 })
 
                 if (response.status === 200) {

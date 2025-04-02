@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,10 +28,13 @@ public class AuthController {
     *  - The authentication token
     *
     * @param loginRequest the username and password of the login
+    * @param result the result of trying to create the loginRequest object
+    * @param
     * @return ResponseEntity the response to the frontend
     */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateLogin(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+    public ResponseEntity<?> authenticateLogin(@Valid @RequestBody LoginRequest loginRequest, BindingResult result, HttpServletResponse response) {
+
 
         // Check if form has errors as defined in LoginFormDTO
         if (result.hasErrors()) {
@@ -42,6 +46,6 @@ public class AuthController {
         }
 
         // Since no semantic errors, send to authService to generate a response
-        return authService.authenticateUser(loginRequest);
+        return authService.authenticateUser(loginRequest, response);
     }
 }

@@ -22,7 +22,8 @@ onMounted(() => {
 
 <template>
   <div>
-    <h1>{{ message }}</h1>
+    <h1 v-if="message">{{ message }}</h1>
+    <h1 v-else> Server status: Offline</h1>
     <h2> test h2! </h2>
     <navbar />
     <RouterView />

@@ -52,7 +52,6 @@ public class JwtTokenProvider {
     *  - The token has the correct secret key
     *  - The token hasn't expired
     */
-
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

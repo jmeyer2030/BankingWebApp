@@ -8,24 +8,23 @@ public class UserDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(nullable = false)
+    @Column(name = "firstname", nullable = false)
     private String firstname;
 
-    @Column(nullable = false)
+    @Column(name = "lastname", nullable = false)
     private String lastname;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
-
-    public UserDTO() {}
 
     public UserDTO(String username, String passwordHash, String firstname, String lastname, String email) {
         this.username = username;
@@ -34,6 +33,8 @@ public class UserDTO {
         this.lastname = lastname;
         this.email = email;
     }
+
+    public UserDTO() { }
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
