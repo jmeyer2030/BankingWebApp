@@ -10,6 +10,8 @@ import com.jmeyer2030.banking_backend.banking.transaction.repository.Transaction
 import com.jmeyer2030.banking_backend.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 
+import java.time.OffsetDateTime;
+
 public class TransactionService {
 
     private final JwtTokenProvider tokenProvider;
@@ -36,7 +38,12 @@ public class TransactionService {
         // Get username and id for the sender
         String fromUsername = tokenProvider.extractUsername(token);
         Long fromUserId = userRepository.findByUsername(fromUsername).getId();
-        String toUsername = transactionForm.getRecipientUsername();
+        String toUsername = null;
+        Long toUserId = null;
+        if (transactionForm.getType() == TransactionType.TRANSFER) {
+            toUsername = transactionForm.getRecipientUsername();
+            toUserId = userRepository.findByUsername(toUsername).getId();
+        }
 
         // Validate recipient exists
         if (transactionForm.getType() == TransactionType.TRANSFER) { // If transfer
@@ -61,8 +68,6 @@ public class TransactionService {
             case WITHDRAW:
                 updateBalanceWithdraw(amount, fromUserId);
             case TRANSFER:
-                String toUsername = account.getUsername();
-                Long toUserId = userRepository.findByUsername(toUsername).getId();
                 updateBalanceTransfer(amount, fromUserId, toUserId);
         }
 
@@ -70,9 +75,15 @@ public class TransactionService {
         Transaction transaction = new Transaction(
                 transactionForm.getAmount(),
                 fromUserId,
+                toUserId,
+                transactionForm.getType(),
+                transactionForm.getDescription(),
+                OffsetDateTime.now()
                 );
 
+        transactionRepository.save(transaction);
 
+        return ResponseEntity.ok().body("Transaction processed!");
     }
 
     /**
