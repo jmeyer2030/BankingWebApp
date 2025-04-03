@@ -79,7 +79,7 @@ public class TransactionService {
                 transactionForm.getType(),
                 transactionForm.getDescription(),
                 OffsetDateTime.now()
-                );
+        );
 
         transactionRepository.save(transaction);
 

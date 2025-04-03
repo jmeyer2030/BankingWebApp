@@ -35,6 +35,11 @@ onMounted(() => {
       <h1> Welcome {{ accountInfo.username }}</h1>
       <h2> Account Balance: ${{ accountInfo.balance / 100 }}.{{ accountInfo.balance % 100 }}{{ accountInfo.balance % 10 }}</h2>
       <h2> Account Type: {{ accountInfo.accountType }}</h2>
+      <h2> Make a transaction? </h2>
+      <h2> Transfer: </h2> <p>Move money from one account to another</p>
+      <h2> Deposit: </h2> <p>Add money to this account</p>
+      <h2> Withdraw: </h2> <p>Take money out of this account</p>
+
     </div>
     <div v-else>
       <h1>Session error!</h1>
