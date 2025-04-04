@@ -1,6 +1,6 @@
 package com.jmeyer2030.banking_backend.banking.account.service;
 
-import com.jmeyer2030.banking_backend.authentication.JwtTokenProvider;
+import com.jmeyer2030.banking_backend.authentication.jwt.JwtTokenProvider;
 import com.jmeyer2030.banking_backend.authentication.service.AuthService;
 import com.jmeyer2030.banking_backend.banking.account.dto.Account;
 import com.jmeyer2030.banking_backend.banking.account.dto.AccountResponse;
@@ -8,7 +8,6 @@ import com.jmeyer2030.banking_backend.banking.account.repository.AccountReposito
 import com.jmeyer2030.banking_backend.banking.transaction.repository.TransactionRepository;
 import com.jmeyer2030.banking_backend.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class AccountService {
 
     public ResponseEntity<?> getAccountInformation(String token) {
         // If token is invalid
-        if(!tokenProvider.validateToken(token)) {
+        if(!tokenProvider.tokenIsValid(token)) {
             return ResponseEntity.badRequest().body("Invalid token");
         }
 

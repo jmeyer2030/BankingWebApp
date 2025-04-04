@@ -25,14 +25,11 @@
 import { reactive } from 'vue'
 export default {
     data() {
-
         return {
-            TransactionType: '',
-
             formData {
-                amount = 0
-                
-            }
+                amount = 0,
+            },
+            TransactionType: '',
         }
     },
     methods: {

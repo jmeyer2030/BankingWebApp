@@ -1,33 +1,50 @@
 package com.jmeyer2030.banking_backend.exception;
 
+import com.jmeyer2030.banking_backend.exception.authentication.InvalidTokenException;
+import com.jmeyer2030.banking_backend.exception.login.IncorrectLoginCredentialsException;
+import com.jmeyer2030.banking_backend.exception.registration.EmailAlreadyExistsException;
+import com.jmeyer2030.banking_backend.exception.registration.UsernameAlreadyExistsException;
+import com.jmeyer2030.banking_backend.exception.transaction.InsufficientFundsException;
+import com.jmeyer2030.banking_backend.exception.transaction.InvalidRecipientException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.LinkedList;
-import java.util.List;
 
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // Registration
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<?> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<?> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
-        return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
-    @ExceptionHandler(UserDoesNotExistException.class)
-    public ResponseEntity<?> UserDoesNotExistException(UserDoesNotExistException e) {
-        return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
+    // Login
+    @ExceptionHandler(IncorrectLoginCredentialsException.class)
+    public ResponseEntity<?> handleIncorrectLoginCredentialsException(IncorrectLoginCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler(IncorrectPasswordException.class)
-    public ResponseEntity<?> IncorrectPasswordException(IncorrectPasswordException e) {
-        return ResponseEntity.badRequest().body(new String[] {e.getMessage()});
+    // Transaction
+    @ExceptionHandler(InvalidRecipientException.class)
+    public ResponseEntity<?> handleInvalidRecipientException(InvalidRecipientException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<?> handleInsufficientFundsException(InsufficientFundsException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+    }
+
+    // Authentication
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 }

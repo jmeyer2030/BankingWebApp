@@ -1,4 +1,4 @@
-package com.jmeyer2030.banking_backend.exception;
+package com.jmeyer2030.banking_backend.exception.registration;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String message) {

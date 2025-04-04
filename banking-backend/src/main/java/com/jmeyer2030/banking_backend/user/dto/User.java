@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class UserDTO {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class UserDTO {
     @Column(name = "email", nullable = false)
     private String email;
 
-    public UserDTO(String username, String passwordHash, String firstname, String lastname, String email) {
+    public User(String username, String passwordHash, String firstname, String lastname, String email) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.firstname = firstname;
@@ -34,7 +34,7 @@ public class UserDTO {
         this.email = email;
     }
 
-    public UserDTO() { }
+    public User() { }
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }

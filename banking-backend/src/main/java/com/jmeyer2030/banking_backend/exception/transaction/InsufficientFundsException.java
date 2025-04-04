@@ -1,4 +1,4 @@
-package com.jmeyer2030.banking_backend.exception;
+package com.jmeyer2030.banking_backend.exception.transaction;
 
 public class InsufficientFundsException extends RuntimeException {
 

@@ -1,6 +1,6 @@
 package com.jmeyer2030.banking_backend.user.repository;
 
-import com.jmeyer2030.banking_backend.user.dto.UserDTO;
+import com.jmeyer2030.banking_backend.user.dto.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 *  - It knows to link to the users table because UserDTO specifies that table
 */
 
-public interface UserRepository extends JpaRepository<UserDTO, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     // Returns the UserDTO with that username
-    UserDTO findByUsername(String username);
+    User findByUsername(String username);
 
     // Checks if that username exists in the table
     boolean existsByUsername(String username);

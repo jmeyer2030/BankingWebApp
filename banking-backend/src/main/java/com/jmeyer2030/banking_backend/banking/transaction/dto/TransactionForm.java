@@ -15,7 +15,7 @@ public class TransactionForm {
     @Min(value = 1, message = "Transaction amount must be >$0.01!") // Value is inclusive
     private Long amount;
 
-    @NotNull(message = "Type is required")
+    @NotNull(message = "Type is required") // TRANSFER, DEPOSIT, or WITHDRAW
     private TransactionType type;
 
     @NotBlank(message = "Description is required")

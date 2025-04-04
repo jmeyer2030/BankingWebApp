@@ -1,14 +1,14 @@
 package com.jmeyer2030.banking_backend.user.service;
 
-import com.jmeyer2030.banking_backend.authentication.JwtTokenProvider;
+import com.jmeyer2030.banking_backend.authentication.jwt.JwtTokenProvider;
 import com.jmeyer2030.banking_backend.banking.account.dto.Account;
 import com.jmeyer2030.banking_backend.banking.account.dto.AccountType;
 import com.jmeyer2030.banking_backend.banking.account.repository.AccountRepository;
+import com.jmeyer2030.banking_backend.user.dto.User;
 import com.jmeyer2030.banking_backend.user.repository.UserRepository;
-import com.jmeyer2030.banking_backend.exception.EmailAlreadyExistsException;
+import com.jmeyer2030.banking_backend.exception.registration.EmailAlreadyExistsException;
 import com.jmeyer2030.banking_backend.user.dto.NewUserFormDTO;
-import com.jmeyer2030.banking_backend.user.dto.UserDTO;
-import com.jmeyer2030.banking_backend.exception.UsernameAlreadyExistsException;
+import com.jmeyer2030.banking_backend.exception.registration.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +63,7 @@ public class UserService {
                 formData.getLastname(),
                 formData.getEmail());
                 */
-        UserDTO user = new UserDTO();
+        User user = new User();
         user.setUsername(formData.getUsername());
         user.setPasswordHash(passwordService.encodePassword(formData.getPassword()));
         user.setFirstname(formData.getFirstname());

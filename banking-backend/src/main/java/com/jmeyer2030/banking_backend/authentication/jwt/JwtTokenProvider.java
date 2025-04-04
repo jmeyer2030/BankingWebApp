@@ -1,4 +1,4 @@
-package com.jmeyer2030.banking_backend.authentication;
+package com.jmeyer2030.banking_backend.authentication.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -52,7 +52,7 @@ public class JwtTokenProvider {
     *  - The token has the correct secret key
     *  - The token hasn't expired
     */
-    public boolean validateToken(String token) {
+    public boolean tokenIsValid(String token) {
         try {
             Jwts.parser()
                     .verifyWith(secretKey)
@@ -67,7 +67,6 @@ public class JwtTokenProvider {
     /**
     * Returns the username of an encrypted token
     * Probably throws an exception if the token is bad.
-    *
     */
     public String extractUsername(String token) {
         return Jwts.parser()

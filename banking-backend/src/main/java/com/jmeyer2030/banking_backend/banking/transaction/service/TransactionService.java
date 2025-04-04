@@ -1,26 +1,29 @@
 package com.jmeyer2030.banking_backend.banking.transaction.service;
 
-import com.jmeyer2030.banking_backend.authentication.JwtTokenProvider;
+import com.jmeyer2030.banking_backend.authentication.service.AuthService;
 import com.jmeyer2030.banking_backend.banking.account.dto.Account;
 import com.jmeyer2030.banking_backend.banking.account.repository.AccountRepository;
 import com.jmeyer2030.banking_backend.banking.transaction.dto.Transaction;
 import com.jmeyer2030.banking_backend.banking.transaction.dto.TransactionForm;
 import com.jmeyer2030.banking_backend.banking.transaction.dto.TransactionType;
 import com.jmeyer2030.banking_backend.banking.transaction.repository.TransactionRepository;
+import com.jmeyer2030.banking_backend.exception.transaction.InsufficientFundsException;
+import com.jmeyer2030.banking_backend.exception.transaction.InvalidRecipientException;
 import com.jmeyer2030.banking_backend.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 public class TransactionService {
 
-    private final JwtTokenProvider tokenProvider;
+    private final AuthService authService;
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
-    public TransactionService(JwtTokenProvider tokenProvider, UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
-        this.tokenProvider = tokenProvider;
+    public TransactionService(AuthService authService, UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+        this.authService = authService;
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
@@ -30,60 +33,83 @@ public class TransactionService {
      * Processes a transaction by validating it, updating balances, and adding the transaction to the database
      */
     public ResponseEntity<?> processTransaction(String token, TransactionForm transactionForm) {
-        // Validate token
-        if (!tokenProvider.validateToken(token)) {
-            return ResponseEntity.badRequest().body("Invalid session token.");
-        }
+        // Authenticate token and get userId
+        Long fromUserId = authService.authenticateAndGetUserId(token);
 
-        // Get username and id for the sender
-        String fromUsername = tokenProvider.extractUsername(token);
-        Long fromUserId = userRepository.findByUsername(fromUsername).getId();
-        String toUsername = null;
+        // If Transfer, we need to validate/get the recipient's information
         Long toUserId = null;
+        Long toAccountId = null;
         if (transactionForm.getType() == TransactionType.TRANSFER) {
-            toUsername = transactionForm.getRecipientUsername();
-            toUserId = userRepository.findByUsername(toUsername).getId();
+            toUserId = validateAndGetRecipientId(transactionForm.getRecipientUsername());
+            toAccountId = validateAndGetRecipientAccountId(transactionForm.getRecipientUsername());
         }
 
-        // Validate recipient exists
-        if (transactionForm.getType() == TransactionType.TRANSFER) { // If transfer
-            if (!userRepository.existsByUsername(transactionForm.getRecipientUsername()) || // if user/account of recipient doesn't exist
-                    !accountRepository.existsByUsername(transactionForm.getRecipientUsername())) {
-                return ResponseEntity.badRequest().body("Recipient doesn't exist!");
-            }
-        }
+        // This should never happen, since an account is created on register
+        Account fromAccount = accountRepository.findByUserId(fromUserId)
+                .orElseThrow(() -> new IllegalStateException("Account not found for user: " + fromUserId));
 
-        // Validate balance
-        Account account = accountRepository.findByUserId(fromUserId).get();
-        if (account.getBalance() < transactionForm.getAmount() && transactionForm.getType() != TransactionType.DEPOSIT) {
-            return ResponseEntity.badRequest().body("Insufficient balance for this transaction!");
+        // If insufficient funds
+        if (transactionForm.getType() != TransactionType.DEPOSIT && fromAccount.getBalance() < transactionForm.getAmount()) {
+            throw new InsufficientFundsException();
         }
 
         // Update balances
-        long amount = transactionForm.getAmount();
+        updateAccountBalances(transactionForm.getType(), transactionForm.getAmount(), fromAccount.getId(), toAccountId);
 
-        switch (transactionForm.getType()) {
-            case DEPOSIT:
-                updateBalanceDeposit(amount, fromUserId);
-            case WITHDRAW:
-                updateBalanceWithdraw(amount, fromUserId);
-            case TRANSFER:
-                updateBalanceTransfer(amount, fromUserId, toUserId);
-        }
-
-        // Add transaction to db
-        Transaction transaction = new Transaction(
-                transactionForm.getAmount(),
-                fromUserId,
-                toUserId,
-                transactionForm.getType(),
-                transactionForm.getDescription(),
-                OffsetDateTime.now()
-        );
-
-        transactionRepository.save(transaction);
+        // Save new transaction to DB
+        transactionRepository.save(
+                new Transaction(
+                        transactionForm.getAmount(),
+                        fromUserId,
+                        toUserId,
+                        transactionForm.getType(),
+                        transactionForm.getDescription(),
+                        OffsetDateTime.now()
+                ));
 
         return ResponseEntity.ok().body("Transaction processed!");
+    }
+
+
+    public Long validateAndGetRecipientId(String recipientUsername) {
+        // Check semantics of recipientUsername
+        if (recipientUsername == null || recipientUsername.isBlank()) {
+            throw new InvalidRecipientException();
+        }
+
+        // Check that they have an account and a username
+        if (!userRepository.existsByUsername(recipientUsername)) {
+            throw new InvalidRecipientException();
+        }
+
+        return userRepository.findByUsername(recipientUsername).getId();
+    }
+
+    public Long validateAndGetRecipientAccountId(String recipientUsername) {
+        // Check semantics of recipientUsername
+        if (recipientUsername == null || recipientUsername.isBlank()) {
+            throw new InvalidRecipientException();
+        }
+
+        Optional<Account> accountOptional = accountRepository.findByUsername(recipientUsername);
+
+        if (accountOptional.isEmpty()) {
+            throw new InvalidRecipientException();
+        }
+
+        return accountOptional.get().getId();
+    }
+
+    private void updateAccountBalances(TransactionType transactionType, long amount, Long fromAccountId, Long toAccountId) {
+        switch (transactionType) {
+            case DEPOSIT:
+                updateBalanceDeposit(amount, fromAccountId);
+            case WITHDRAW:
+                updateBalanceWithdraw(amount, fromAccountId);
+            case TRANSFER:
+                updateBalanceTransfer(amount, fromAccountId, toAccountId);
+        }
+
     }
 
     /**
