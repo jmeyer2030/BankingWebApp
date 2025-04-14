@@ -18,6 +18,9 @@
   - [Backend Setup Instructions](#backend-setup-instructions)
   - [frontend Requirements](#frontend-requirements)
   - [frontend Setup Instructions](#frontend-setup-instructions)
+- [Potential Improvements and Successes](#potential-improvements-and-successes)
+  - [Potential Improvements](#potential-improvements)
+  - [Successes](#successes)
 
 # Features
 
@@ -53,6 +56,8 @@ In the interface, only the transaction type, "transfer", will show the field of 
 ## Transaction History
 
 The transaction history page allows users to view all transactions that involve them, including transactions where they are marked as a recipient. It uses pageable, and allows users to change the page, or the page size. It is sorted with the most recent transactions being shown first. Though it only shows calendar date, precise date/time is used.
+
+This is implemented using a custom sql query. "Many to one" relationships are used with transactions and accounts to retrieve information such as accounts associated with transactions, and the users associated with the accounts.
 
 <img src="./Images/transaction-history-page2.png" alt="My Photo" width="600"/>
 
@@ -157,3 +162,22 @@ navigate to "bankingwebapp/banking-frontend" and install dependencies
  ```bash
  npm run dev
  ```
+
+
+# Potential Improvements and Successes
+
+## Potential improvements
+
+This obviously doesn't have all the desired features of a banking app and wasn't intended to be, and it is tough to decide when a project is "done" since they never really are. That being said, some features and improvements that I think would be benefitial to implement are:
+ - Race condition testing and features for transaction security
+ - Maybe more frequent authentication from the backend. Even though when information is retrieved from the backend there is always a authentication check, I think on page reload, authenticating, then clearing locally stored information if the auth token expired would be good.
+ - More response consitency in the backend. All responses should be in the format of the "ApiResponse" class, this would make writing the frontend easier and more normal.
+ - Multiple account features. This could be things like simulating a brokerage account or savings account.
+
+## Successes
+
+Some things were done well I think, and it is worth pointing them out for reference in any RESTful apis I make in the future.
+ - Separation of concerns in services, controllers, etc.
+ - Database structure. I really liked the "Many to one" relationships that allowed really convenient access to more detailed information about transactions.
+ - General expandability of features in the API. Because some things were done well, I think it would be relatively easy to add more features, such as some of the things I mentioned in the improvements section.
+ - Frontend styling is pretty clean, despite not really being a focus.
