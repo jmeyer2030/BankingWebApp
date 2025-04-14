@@ -1,5 +1,7 @@
 package com.jmeyer2030.banking_backend.exception;
 
+import com.jmeyer2030.banking_backend.banking.account.dto.Account;
+import com.jmeyer2030.banking_backend.exception.account.AccountDoesNotExistException;
 import com.jmeyer2030.banking_backend.exception.authentication.InvalidTokenException;
 import com.jmeyer2030.banking_backend.exception.login.IncorrectLoginCredentialsException;
 import com.jmeyer2030.banking_backend.exception.registration.EmailAlreadyExistsException;
@@ -46,5 +48,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    // Account
+    @ExceptionHandler(AccountDoesNotExistException.class)
+    public ResponseEntity<?> handleAccountDoesNotExistException(AccountDoesNotExistException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }

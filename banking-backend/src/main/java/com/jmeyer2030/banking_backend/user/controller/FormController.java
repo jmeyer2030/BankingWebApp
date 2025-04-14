@@ -1,6 +1,5 @@
 package com.jmeyer2030.banking_backend.user.controller;
 
-import com.jmeyer2030.banking_backend.authentication.dto.LoginRequest;
 import com.jmeyer2030.banking_backend.user.service.UserService;
 import com.jmeyer2030.banking_backend.user.dto.NewUserFormDTO;
 import jakarta.validation.Valid;

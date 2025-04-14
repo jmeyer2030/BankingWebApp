@@ -55,14 +55,6 @@ public class UserService {
             throw new EmailAlreadyExistsException();
         }
 
-        // Create UserDTO, hashing the password
-        /*
-        UserDTO user = new UserDTO(formData.getUsername(),
-                passwordService.encodePassword(formData.getPassword()),
-                formData.getFirstname(),
-                formData.getLastname(),
-                formData.getEmail());
-                */
         User user = new User();
         user.setUsername(formData.getUsername());
         user.setPasswordHash(passwordService.encodePassword(formData.getPassword()));
@@ -72,11 +64,10 @@ public class UserService {
         userRepository.save(user);
 
         Account account = new Account();
-        account.setUsername(formData.getUsername());
         account.setAccountType(AccountType.CHECKING);
         account.setBalance(0L);
         account.setCreationDate(OffsetDateTime.now());
-        account.setUserId(user.getId()); // This is only initialized AFTER it is saved to the db!
+        account.setUser(user);
 
         // Add to database tables
         accountRepository.save(account);

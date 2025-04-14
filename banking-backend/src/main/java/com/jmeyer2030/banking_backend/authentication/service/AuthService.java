@@ -4,7 +4,6 @@ import com.jmeyer2030.banking_backend.authentication.jwt.JwtTokenProvider;
 import com.jmeyer2030.banking_backend.exception.authentication.InvalidTokenException;
 import com.jmeyer2030.banking_backend.user.dto.User;
 import com.jmeyer2030.banking_backend.user.repository.UserRepository;
-import com.jmeyer2030.banking_backend.user.service.PasswordService;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -24,12 +23,14 @@ public class AuthService {
     /**
     * Returns the userId given a token. Throws exception if token is invalid
     *
-    * @param token authentication token
-    * @returns userId if token is valid
-    * @thows InvalidTokenException if token expired or isn't valid
+    * @param token the authentication token
+    * @return the userId if the token is valid
+    * @throws InvalidTokenException if token is expired or invalid
     */
-    public Long authenticateAndGetUserId(String token) {
-        Objects.requireNonNull(token);
+    public Long verifyTokenAndGetUserId(String token) {
+        if (token == null) {
+            throw new InvalidTokenException("Login to access the home page.");
+        }
 
         // If token is bad, throw an exception
         if (!jwtTokenProvider.tokenIsValid(token)) {
@@ -38,11 +39,12 @@ public class AuthService {
 
         // Else, token is valid
         String username = jwtTokenProvider.extractUsername(token);
-        User user = Objects.requireNonNull(userRepository.findByUsername(username));
+
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new InvalidTokenException();
+        }
 
         return user.getId();
     }
-
-
-
 }

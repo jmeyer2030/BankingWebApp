@@ -1,6 +1,6 @@
 package com.jmeyer2030.banking_backend.authentication.service;
 
-import com.jmeyer2030.banking_backend.authentication.dto.LoginRequest;
+import com.jmeyer2030.banking_backend.authentication.dto.LoginForm;
 import com.jmeyer2030.banking_backend.authentication.jwt.JwtTokenProvider;
 import com.jmeyer2030.banking_backend.exception.login.IncorrectLoginCredentialsException;
 import com.jmeyer2030.banking_backend.user.dto.User;
@@ -24,28 +24,27 @@ public class LoginService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
     /**
      * Authenticates a user from a login request
      *
-     * @param loginRequest username and password of the login request
+     * @param loginForm username and password of the login request
      * @param response we take the response that we are going to send so that we can set it's cookie
      * @return ResponseEntity with the token or incorrect username/password
      */
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest, HttpServletResponse response) throws IncorrectLoginCredentialsException {
+    public ResponseEntity<String> loginUser(LoginForm loginForm, HttpServletResponse response) {
         // Exit if user doesn't exist
-        if (!userRepository.existsByUsername(loginRequest.getUsername())) {
+        if (!userRepository.existsByUsername(loginForm.getUsername())) {
             throw new IncorrectLoginCredentialsException();
         }
 
         // Exit if password is wrong
-        User user = userRepository.findByUsername(loginRequest.getUsername());
-        if (!passwordService.matches(loginRequest.getPassword(), user.getPasswordHash())) {
+        User user = userRepository.findByUsername(loginForm.getUsername());
+        if (!passwordService.matches(loginForm.getPassword(), user.getPasswordHash())) {
             throw new IncorrectLoginCredentialsException();
         }
 
         // Get auth token (throws exception which is caught and returns a response)
-        String token = jwtTokenProvider.generateToken(loginRequest.getUsername());
+        String token = jwtTokenProvider.generateToken(loginForm.getUsername());
 
         // Manually set cookie
         String cookie = "accountToken=" + token +
@@ -57,6 +56,19 @@ public class LoginService {
 
         response.setHeader("Set-Cookie", cookie);
 
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body("Login was successful!");
+    }
+
+    public ResponseEntity<Void> logoutUser(HttpServletResponse response) {
+        String cookie = "accountToken=" + "" +
+                "; HttpOnly" +
+                "; SameSite=Lax" +
+                //"; Secure" + // Not Secure because not https on local
+                "; Path=/" +
+                "; Max-Age=0";
+
+        response.setHeader("Set-Cookie", cookie);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.jmeyer2030.banking_backend.banking.account.dto;
 
+import com.jmeyer2030.banking_backend.user.dto.User;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -8,19 +9,18 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "accounts")
 public class Account {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
     @Column(name = "balance", nullable = false)
     private Long balance;
-
-    @Column(name = "username", nullable = false)
-    private String username;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", nullable = false)
@@ -29,17 +29,24 @@ public class Account {
     @Column(name = "creation_date", nullable = false)
     private OffsetDateTime creationDate;
 
+    public Account() {}
+
+    public Account(Long id, Long balance, AccountType accountType, OffsetDateTime creationDate, User user) {
+        this.id = id;
+        this.balance = balance;
+        this.accountType = accountType;
+        this.creationDate = creationDate;
+        this.user = user;
+    }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-
     public Long getBalance() { return balance; }
     public void setBalance(Long balance) { this.balance = balance; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
 
     public AccountType getAccountType() { return accountType; }
     public void setAccountType(AccountType accountType) { this.accountType = accountType; }

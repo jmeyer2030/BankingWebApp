@@ -1,28 +1,42 @@
 package com.jmeyer2030.banking_backend.banking.account.dto;
 
 import com.jmeyer2030.banking_backend.banking.transaction.dto.Transaction;
+import com.jmeyer2030.banking_backend.banking.transaction.dto.TransactionDetails;
 
 import java.util.List;
 
 public class AccountResponse {
-    private Long accountId;
-    private String accountType;
+    private AccountType accountType;
+    private Long userId;
     private String username;
-    private double balance;
-    private List<Transaction> recentTransactions;
+    private Long accountId;
+    private Long balance;
+    private List<TransactionDetails> recentTransactions;
+
+    public AccountResponse(Long accountId, AccountType accountType, String username, Long balance, List<TransactionDetails> recentTransactions, Long userId) {
+        this.accountId = accountId;
+        this.accountType = accountType;
+        this.username = username;
+        this.balance = balance;
+        this.recentTransactions = recentTransactions;
+        this.userId = userId;
+    }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
 
-    public String getAccountType() { return accountType; }
-    public void setAccountType(String accountType) { this.accountType = accountType; }
+    public AccountType getAccountType() { return accountType; }
+    public void setAccountType(AccountType accountType) { this.accountType = accountType; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    public Long getBalance() { return balance; }
+    public void setBalance(Long balance) { this.balance = balance; }
 
-    public List<Transaction> getRecentTransactions() { return recentTransactions; }
-    public void setRecentTransactions(List<Transaction> recentTransactions) { this.recentTransactions = recentTransactions; }
+    public List<TransactionDetails> getRecentTransactions() { return recentTransactions; }
+    public void setRecentTransactions(List<TransactionDetails> recentTransactions) { this.recentTransactions = recentTransactions; }
 }

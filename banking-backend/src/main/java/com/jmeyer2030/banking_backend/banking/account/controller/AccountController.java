@@ -24,8 +24,6 @@ public class AccountController {
     */
     @PostMapping("/account")
     public ResponseEntity<?> getAccountInfo(@CookieValue(name = "accountToken", required = false) String token) {
-        System.out.println("TOKEN: " + token);
-
         return accountService.getAccountInformation(token);
     }
 

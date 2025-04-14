@@ -12,15 +12,15 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByUserId(Long userId);
+    Optional<Account> findByUser_Id(Long userId);
 
     Optional<Account> findById(Long Id);
 
-    Optional<Account> findByUsername(String username);
+    Optional<Account> findByUser_Username(String username);
 
-    boolean existsByUsername(String username);
+    boolean existsByUser_Username(String username);
 
     @Modifying
-    @Query("UPDATE Account a SET a.balance = :balance WHERE a.id = :accountId")
-    void updateBalance(@Param("accountId") Long accountId, @Param("balance") Long balance);
+    @Query("UPDATE Account a SET a.balance = a.balance + :delta WHERE a.id = :accountId")
+    void adjustBalance(@Param("accountId") Long accountId, @Param("delta") Long delta);
 }

@@ -1,3 +1,6 @@
+-- Many transactions point to one ACCOUNT, whcih many of can point to one USER
+
+
 -- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
@@ -12,7 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS accounts (
     id BIGSERIAL PRIMARY KEY, -- big int with auto-increment
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- On delete of users, delete this.
-    username TEXT NOT NULL REFERENCES users(username) ON DELETE CASCADE,
     balance BIGINT NOT NULL DEFAULT 0, -- stored in pennies
     account_type TEXT NOT NULL,
     creation_date TIMESTAMPTZ NOT NULL DEFAULT NOW() -- Times with time zone
@@ -28,8 +30,3 @@ CREATE TABLE IF NOT EXISTS transactions (
     description TEXT,
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
--- OPTIONAL: INDEXES FOR PERFORMANCE
--- CREATE INDEX IF NOT EXISTS idx_transactions_sender ON transactions(sender_id);
--- CREATE INDEX IF NOT EXISTS idx_transactions_recipient ON transactions(recipient_id);
--- CREATE INDEX IF NOT EXISTS idx_transactions_timestamp ON transactions(timestamp DESC);
