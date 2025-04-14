@@ -10,7 +10,7 @@ console.log(auth.user);
   <nav class="bg-white shadow-md px-6 py-4 flex items-center justify-between">
     <!-- Left side -->
     <div class="flex items-center space-x-8">
-      <div class="text-xl font-semibold text-blue-600">Banking Web App</div>
+      <div class="text-xl font-semibold text-blue-600">Banking Sim App</div>
 
       <div class="hidden md:flex space-x-4" v-if="auth.user">
         <router-link to="/account" class="text-gray-700 hover:text-blue-600 transition">

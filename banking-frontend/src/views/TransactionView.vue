@@ -1,7 +1,7 @@
 <template>
     <div v-if="auth.user">
 
-        <h1 class="text-2xl font-semibold mb-6 text-gray-800 text-center">Submit a Transaction</h1>
+        <h1 class="text-2xl font-semibold mb-6 text-gray-800 text-center mt-12">Submit a Transaction</h1>
         <form class="max-w-md mx-auto" @submit.prevent="postTransaction">
 
             <div class="relative z-0 w-full mb-5 group">

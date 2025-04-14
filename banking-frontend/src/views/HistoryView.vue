@@ -1,6 +1,6 @@
 <template>
-    <div class="text-center mt-6 max-w-7xl mx-auto mb-12">
-        <h2 class="text-xl font-semibold text-gray-800 mb-12">Full Transaction History</h2>
+    <div class="text-center mt-12 max-w-7xl mx-auto mb-12">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-12">Full Transaction History</h2>
         <RecentTransactionsTable :transactions="transactions" />
         <p class="text-sm">Showing page {{ currentPage }} of {{ totalPages }}</p>
 

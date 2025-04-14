@@ -1,7 +1,7 @@
 <template>
     <div class="mt-12 text-center">
 
-        <h2 class="text-3xl font-semibold text-gray-800 mb-4">Account Overview</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Account Overview</h2>
         <div v-if="loading">
             <h1>Awaiting server response. Please wait.</h1>
         </div>
